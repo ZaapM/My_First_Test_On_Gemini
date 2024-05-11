@@ -1,0 +1,416 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "provenance": [],
+      "authorship_tag": "ABX9TyM63sZBo9Ds14OcPGBEV0nP",
+      "include_colab_link": true
+    },
+    "kernelspec": {
+      "name": "python3",
+      "display_name": "Python 3"
+    },
+    "language_info": {
+      "name": "python"
+    }
+  },
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/ZaapM/My_First_Test_On_Gemini/blob/main/My%20First%20Chatbot%20from%20Google%20Gemini\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "#Installing the SDK Generative AI from Google (Gemini)"
+      ],
+      "metadata": {
+        "id": "vuRW__3C3HFS"
+      }
+    },
+    {
+      "cell_type": "code",
+      "execution_count": 5,
+      "metadata": {
+        "id": "JVpNkgMozAWJ"
+      },
+      "outputs": [],
+      "source": [
+        "#pip é gestor de pacotes (gera mt output)\n",
+        "#o -q (quiet) você não vê a saída do comando\n",
+        "# -U vai deixar o programa atualizado caso você tenha a versão antiga\n",
+        "!pip install -q -U google-generativeai"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# Import the Python SDK\n",
+        "import google.generativeai as genai\n",
+        "# Used to securely store your API key\n",
+        "from google.colab import userdata\n",
+        "\n",
+        "GOOGLE_API_KEY=\"\"\n",
+        "genai.configure(api_key=GOOGLE_API_KEY)"
+      ],
+      "metadata": {
+        "id": "n_iUycTD3rji"
+      },
+      "execution_count": 2,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "Listar os modelos disponíveis"
+      ],
+      "metadata": {
+        "id": "EhB2RnTn31K4"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "for i in genai.list_models():\n",
+        "  if \"generateContent\" in i.supported_generation_methods:\n",
+        "    print (i.name)\n"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 139
+        },
+        "id": "KD0-mgPq33-F",
+        "outputId": "cf2cfaff-de77-4172-a942-3416cd6460ef"
+      },
+      "execution_count": 3,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "models/gemini-1.0-pro\n",
+            "models/gemini-1.0-pro-001\n",
+            "models/gemini-1.0-pro-latest\n",
+            "models/gemini-1.0-pro-vision-latest\n",
+            "models/gemini-1.5-pro-latest\n",
+            "models/gemini-pro\n",
+            "models/gemini-pro-vision\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "#momento de criar parâmentros (tipo temperatura, Q, K)\n",
+        "generation_config = {\n",
+        "    \"candidate_count\": 1,\n",
+        "    \"temperature\": 0.5,\n",
+        " #   \"top_p\":\n",
+        " #   \"top_k\":\n",
+        "}"
+      ],
+      "metadata": {
+        "id": "UEMm5ZMF6ZxD"
+      },
+      "execution_count": 8,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "#configurações de sensibilidade (parâmetros de segurança)\n",
+        "safety_settings = {\n",
+        "    \"HARASSMENT\": \"BLOCK_NONE\",\n",
+        "    \"HATE\": \"BLOCK_NONE\",\n",
+        "    \"SEXUAL\":\"BLOCK_NONE\" ,\n",
+        "    \"DANGEROUS\" :\"BLOCK_NONE\",\n",
+        "}"
+      ],
+      "metadata": {
+        "id": "mKnxZAbn7BAI"
+      },
+      "execution_count": 9,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "Inicializando o modelo"
+      ],
+      "metadata": {
+        "id": "Xp7B0WpK71YS"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "model = genai.GenerativeModel(model_name = \"gemini-1.0-pro\",\n",
+        "                              generation_config = generation_config,\n",
+        "                              safety_settings = safety_settings)"
+      ],
+      "metadata": {
+        "id": "p6X0FW4t738k"
+      },
+      "execution_count": 11,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "Fazendo funcionar"
+      ],
+      "metadata": {
+        "id": "sMxFD8Ub89YQ"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "response = model.generate_content(\"Brasil tem qual capital?\")\n",
+        "#o text é só porque queremos o texto\n",
+        "print(response.text)"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 34
+        },
+        "id": "rLRHBky58uDr",
+        "outputId": "98bb813e-ce70-4364-c4a0-913409eb436f"
+      },
+      "execution_count": 13,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Brasília\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "Agora vamos fazer o chat dessa brincadeira"
+      ],
+      "metadata": {
+        "id": "_ox4JMHN9HDt"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "#o colchete vai abrir uma lista\n",
+        "chat = model.start_chat(history = [])"
+      ],
+      "metadata": {
+        "id": "QWs1NN7U9Jgz"
+      },
+      "execution_count": 14,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "Iremos criar um prompt agora para que possamos enviar uma pergunta (input) pro sistema."
+      ],
+      "metadata": {
+        "id": "8-9dbJnZ93FP"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "prompt = input(\"Esperando prompt: \")\n",
+        "\n",
+        "while prompt != \"fim\":\n",
+        "  response = chat.send_message(prompt)\n",
+        "  print (\"Resposta\", response.text, \"\\n\")\n",
+        "  prompt = input(\"Esperando prompt: \")"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 569
+        },
+        "id": "SfMzcGQX92ju",
+        "outputId": "6b5137a1-f054-4286-cc00-8659775471a7"
+      },
+      "execution_count": 17,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Esperando prompt: Qual é a capital do Japão?\n",
+            "Resposta Tóquio \n",
+            "\n",
+            "Esperando prompt: Qual o tipo de desenho mais comum nesse país?\n",
+            "Resposta Anime\n",
+            "\n",
+            "O anime é um estilo de desenho animado originário do Japão que se caracteriza por personagens com olhos grandes e expressivos, cabelos coloridos e traços exagerados. É um dos tipos de desenho mais populares no Japão e tem ganhado popularidade global nos últimos anos. \n",
+            "\n",
+            "Esperando prompt: Fim\n",
+            "Resposta Obrigado por jogar! Fico feliz que você tenha se divertido. Se você tiver alguma outra dúvida ou quiser continuar jogando, fique à vontade para me perguntar. \n",
+            "\n"
+          ]
+        },
+        {
+          "output_type": "error",
+          "ename": "KeyboardInterrupt",
+          "evalue": "Interrupted by user",
+          "traceback": [
+            "\u001b[0;31m---------------------------------------------------------------------------\u001b[0m",
+            "\u001b[0;31mKeyboardInterrupt\u001b[0m                         Traceback (most recent call last)",
+            "\u001b[0;32m<ipython-input-17-9fe585081121>\u001b[0m in \u001b[0;36m<cell line: 3>\u001b[0;34m()\u001b[0m\n\u001b[1;32m      4\u001b[0m   \u001b[0mresponse\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0mchat\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0msend_message\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mprompt\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m      5\u001b[0m   \u001b[0mprint\u001b[0m \u001b[0;34m(\u001b[0m\u001b[0;34m\"Resposta\"\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mresponse\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mtext\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0;34m\"\\n\"\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m----> 6\u001b[0;31m   \u001b[0mprompt\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0minput\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m\"Esperando prompt: \"\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m",
+            "\u001b[0;32m/usr/local/lib/python3.10/dist-packages/ipykernel/kernelbase.py\u001b[0m in \u001b[0;36mraw_input\u001b[0;34m(self, prompt)\u001b[0m\n\u001b[1;32m    849\u001b[0m                 \u001b[0;34m\"raw_input was called, but this frontend does not support input requests.\"\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    850\u001b[0m             )\n\u001b[0;32m--> 851\u001b[0;31m         return self._input_request(str(prompt),\n\u001b[0m\u001b[1;32m    852\u001b[0m             \u001b[0mself\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0m_parent_ident\u001b[0m\u001b[0;34m,\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    853\u001b[0m             \u001b[0mself\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0m_parent_header\u001b[0m\u001b[0;34m,\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n",
+            "\u001b[0;32m/usr/local/lib/python3.10/dist-packages/ipykernel/kernelbase.py\u001b[0m in \u001b[0;36m_input_request\u001b[0;34m(self, prompt, ident, parent, password)\u001b[0m\n\u001b[1;32m    893\u001b[0m             \u001b[0;32mexcept\u001b[0m \u001b[0mKeyboardInterrupt\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    894\u001b[0m                 \u001b[0;31m# re-raise KeyboardInterrupt, to truncate traceback\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m--> 895\u001b[0;31m                 \u001b[0;32mraise\u001b[0m \u001b[0mKeyboardInterrupt\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m\"Interrupted by user\"\u001b[0m\u001b[0;34m)\u001b[0m \u001b[0;32mfrom\u001b[0m \u001b[0;32mNone\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m    896\u001b[0m             \u001b[0;32mexcept\u001b[0m \u001b[0mException\u001b[0m \u001b[0;32mas\u001b[0m \u001b[0me\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    897\u001b[0m                 \u001b[0mself\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mlog\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mwarning\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m\"Invalid Message:\"\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mexc_info\u001b[0m\u001b[0;34m=\u001b[0m\u001b[0;32mTrue\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n",
+            "\u001b[0;31mKeyboardInterrupt\u001b[0m: Interrupted by user"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "#Melhorando a visualização\n",
+        "#Código disponível em https://ai.google.dev/tutorials/python_quickstart#import_packages\n",
+        "import textwrap\n",
+        "from IPython.display import display\n",
+        "from IPython.display import Markdown\n",
+        "\n",
+        "def to_markdown(text):\n",
+        "  text = text.replace('•', '  *')\n",
+        "  return Markdown(textwrap.indent(text, '> ', predicate=lambda _: True))\n",
+        "\n",
+        "#Imprimindo o histórico\n",
+        "for message in chat.history:\n",
+        "  display(to_markdown(f'**{message.role}**: {message.parts[0].text}'))\n",
+        "  print('-------------------------------------------')"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 469
+        },
+        "id": "aLChwouU_UfA",
+        "outputId": "85807772-4ca5-4934-b985-0ca8e051a740"
+      },
+      "execution_count": 18,
+      "outputs": [
+        {
+          "output_type": "display_data",
+          "data": {
+            "text/plain": [
+              "<IPython.core.display.Markdown object>"
+            ],
+            "text/markdown": "> **user**: Qual é a capital do Japão?"
+          },
+          "metadata": {}
+        },
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "-------------------------------------------\n"
+          ]
+        },
+        {
+          "output_type": "display_data",
+          "data": {
+            "text/plain": [
+              "<IPython.core.display.Markdown object>"
+            ],
+            "text/markdown": "> **model**: Tóquio"
+          },
+          "metadata": {}
+        },
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "-------------------------------------------\n"
+          ]
+        },
+        {
+          "output_type": "display_data",
+          "data": {
+            "text/plain": [
+              "<IPython.core.display.Markdown object>"
+            ],
+            "text/markdown": "> **user**: Qual o tipo de desenho mais comum nesse país?"
+          },
+          "metadata": {}
+        },
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "-------------------------------------------\n"
+          ]
+        },
+        {
+          "output_type": "display_data",
+          "data": {
+            "text/plain": [
+              "<IPython.core.display.Markdown object>"
+            ],
+            "text/markdown": "> **model**: Anime\n> \n> O anime é um estilo de desenho animado originário do Japão que se caracteriza por personagens com olhos grandes e expressivos, cabelos coloridos e traços exagerados. É um dos tipos de desenho mais populares no Japão e tem ganhado popularidade global nos últimos anos."
+          },
+          "metadata": {}
+        },
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "-------------------------------------------\n"
+          ]
+        },
+        {
+          "output_type": "display_data",
+          "data": {
+            "text/plain": [
+              "<IPython.core.display.Markdown object>"
+            ],
+            "text/markdown": "> **user**: Fim"
+          },
+          "metadata": {}
+        },
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "-------------------------------------------\n"
+          ]
+        },
+        {
+          "output_type": "display_data",
+          "data": {
+            "text/plain": [
+              "<IPython.core.display.Markdown object>"
+            ],
+            "text/markdown": "> **model**: Obrigado por jogar! Fico feliz que você tenha se divertido. Se você tiver alguma outra dúvida ou quiser continuar jogando, fique à vontade para me perguntar."
+          },
+          "metadata": {}
+        },
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "-------------------------------------------\n"
+          ]
+        }
+      ]
+    }
+  ]
+}
